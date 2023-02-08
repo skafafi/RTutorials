@@ -1,0 +1,76 @@
+---
+title: "lab4_descriptivestats"
+author: "Seham Kafafi"
+date: '2023-02-07'
+output:
+  pdf_document: default
+  html_document: default
+---
+For today's lab assignment, I want you to get into pairs or trios. We will go through the assignment together, but I want you to help each other whenever you get stuck. 
+
+Setup is where you'll put your packages and libraries. If you want this section included in your final document, then you'll enter include=TRUE. Otherwise, you can use include=FALSE. 
+
+```{r setup, include=TRUE}
+# you need to install packages the first time you use them 
+# after they are installed on your laptop you only need to use the library function to call the package
+# Packages contain functions you use to manipulate your data. 
+install.packages("psych")
+install.packages("plyr")
+library(psych)
+library(plyr)
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Import data}
+setwd("H:/My Drive/TA Methods/week4") # sets the working directory
+dat <- read.csv("student-mat.csv") # imports the data from the working directory
+```
+
+```{r Look at your data}
+head(dat) # shows the few rows of the dataset 
+```
+
+```{r Summary}
+summary(dat) # shows measures of central tendency, quartiles, and min/max for data values. This is ideal for continuous variables
+summary(dat$age) # you can get descriptive statistics for specific variables. This one shows age. 
+summary(dat$absences) # This one shows descriptive statistics for absences
+```
+
+```{r Describe}
+describe(dat) # this is another way to summarize data
+# it is a function from the "psych" package
+```
+
+```{r Complete Cases}
+complete.cases(dat) # tells you if data has all values entered, indicated by "TRUE" 
+is.na(dat) # tells you if data is missing. States "FALSE" 
+sum(is.na(dat)) # gives the number of missing cases in data
+```
+
+```{r Frequency Table}
+# Let's explore the relationship between weekend alcohol consumption and absences. First, let's see the frequency of weekend alcohol consumption.
+
+table(dat$Walc) # Because Walc is an ordinal variable on a scale of 1 to 5, it shows the frequency for each value. 
+table(dat$absences) # This is super confusing to read. So let's use the "plyr" package to get a better table. 
+count(dat, 'absences') # that's better 
+```
+
+```{r Group Statistics }
+describe.by(dat, "address") # This will show statistics based on whether students live in an Urban or Rural area 
+describe.by(dat, "sex") # This will show statistics based on sex 
+```
+
+```{r Histogram}
+hist(dat$absences) # Basic histogram
+hist(dat$absences,
+  main="Number of Absences",
+  xlab="Absences",
+  ylab="Frequency",
+  col="darkmagenta") # Prettier histogram 
+```
+
+```{r Correlation}
+# Let's find the correlation between amount of alcohol consumed over the weekend and number of absences. 
+cor.test(dat$Walc, dat$absences, 
+                    method = "pearson")
+```
