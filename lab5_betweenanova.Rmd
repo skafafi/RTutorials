@@ -1,0 +1,118 @@
+---
+title: 'Lab 5: Between Subjects ANOVA'
+author: "INSERT YOUR NAME HERE"
+date: "2023-02-12"
+output:
+  html_document:
+    df_print: paged
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+library(psych)
+library(plyr) # install this package if you need to using install.packages(plyr)
+library(dplyr)
+```
+
+Please be sure to get into pairs or trios and help each other. 
+
+Purpose: 
+
+The purpose of this lab is to review how to use R Studio to enter and analyze a one-way between-subjects ANOVA. 
+
+Instructions: 
+
+Prof. Motivation collected data from 12 participants (N=12) in a study comparing conceptual instruction to procedural instruction. In the study, participants solved a set of 60 mathematics problems after receiving one of two lessons. A third group did not receive a lesson, so this is our control group.
+
+The conceptual lesson focused on a mathematical concept important for understanding the problems. The procedural lesson focused on a specific problem-solving procedure that could be used to solve the problems. In the control condition, participants did not receive a lesson before solving the problems. The dataset shows the number of problems solved correctly (out of 60) by each participant.
+
+1. Download the dataset: “week5_dataset.csv”. 
+
+
+
+2. Put the dataset into the folder you want to use for class today. This will be your working directory. 
+
+
+
+3. Open R studio. Set your working directory. There are two ways to do this.
+
+First way: Session -> Set Working Directory -> Choose Directory 
+
+OR 
+
+Enter the following code into the lower console of R studio. 
+setwd(“INSERT FILEPATH HERE”) 
+
+
+
+```{r Import data}
+# import the dataset 
+dat1 <- read.csv("week5_dataset.csv") # imports the data from the working directory
+```
+
+```{r View data}
+# This is a small dataset so let's view the entire dataframe
+# It should open in a new window 
+View(dat1)
+```
+
+4. What is the null hypothesis? State it here: 
+
+
+
+
+
+```{r Descriptive Statistics}
+# This is a very fancy way of getting our descriptive statistics based on the condition. It uses the 'dplyr' package and calculates the mean, standard deviation and variance of each condition. 
+group_by(dat1, Condition) %>%
+  summarise(
+    count = n(),
+    mean = mean(Score),
+    sd = sd(Score),
+    var = var(Score)
+  )
+```
+
+
+5. What is the mean of each condition (Conceptual, Procedural, Control)? What can you conclude? 
+
+
+
+
+6. What is the variance of each condition? What does the variance of each condition tell you?
+
+
+
+```{r One-Way ANOVA}
+# Calculates a one-way between subject ANOVA
+one.way <- aov(Score ~ Condition, data = dat1)
+summary(one.way)
+```
+
+
+
+7. What is the p-value for the effect of condition?  What does that p-value mean?  Can we use these results to conclude that conceptual instruction is better than procedural instruction? Why or why not? (Hint: Do you know the difference between each group?)
+
+
+
+8. What would you have to do to be able to make a conclusion about the difference between conceptual and procedural instruction? 
+
+
+
+```{r Multiple Pairwise-Comparison}
+# diff: difference between means of the two groups
+# lwr, upr: the lower and the upper end point of the confidence interval at 95% (default)
+# p adj: p-value after adjustment for the multiple comparisons.
+TukeyHSD(one.way)
+```
+
+9. What conclusions can you state about the differences between each condition? 
+
+
+
+10. Click on the arrow next to "Knit" and save either as a PDF, Word or HTML. Name the document "yourname_lab5".
+
+
+
+
